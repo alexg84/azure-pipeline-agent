@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.deployment.metadata.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: {{ .Values.deployment.metadata.labels.app }}
+spec:
+  replicas: {{ .Values.deployment.replicas }} 
+  selector:
+    matchLabels:
+      app: {{ .Values.deployment.metadata.labels.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.deployment.metadata.labels.app }}
+    spec:
+      serviceAccountName: {{ .Values.deployment.serviceAccountName }}
+      containers:
+      - name: {{ .Values.deployment.containers.name }}
+        image: {{ .Values.deployment.containers.image }}
+        imagePullPolicy: Always
+        securityContext:
+          privileged: true
+        env:
+          - name: AZP_URL
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deployment.secretRefName }}
+                key: AZP_URL
+          - name: AZP_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deployment.secretRefName }}
+                key: AZP_TOKEN
+          - name: AZP_POOL
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.deployment.secretRefName }}
+                key: AZP_POOL
+        resources:
+          requests:
+            memory: {{ .Values.deployment.containers.resources.requests.memory }}
+            cpu: {{ .Values.deployment.containers.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.deployment.containers.resources.limits.memory }}
+            cpu: {{ .Values.deployment.containers.resources.limits.cpu }}
+      nodeSelector:
+        system: {{ .Values.deployment.nodeSelector.system }}

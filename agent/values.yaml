@@ -1,0 +1,50 @@
+deployment:
+  metadata:
+    name: azure-pipeline-agent
+    labels:
+      app: azure-pipeline-agent
+  replicas: 1
+  serviceAccountName: azure-pipeline-agent-sa
+  containers:
+    name: azure-pipeline-agent
+    image: <ACCOUNT_ID>.dkr.ecr.<AWS_REGION>.amazonaws.com/azure-pipeline-agent:latest
+    resources:
+      requests:
+        memory: "4Gi"
+        cpu: "2"
+      limits:
+        memory: "4Gi"
+        cpu: "2"
+  nodeSelector:
+    system: azure-pipeline-agent
+  secretRefName: azure-pipelines-secret
+
+serviceaccount:
+  metadata:
+    name: azure-pipeline-agent-sa
+    annotations:
+      roleArn: arn:aws:iam::AWS_ACCOUNT_ID:role/AzureDevOpsEKSRole
+
+namespace:
+  name: azure-pipeline-agent
+
+role:
+  metadata:
+    name: azure-pipeline-agent-role
+
+roleBinding:
+  metadata:
+    name: azure-pipeline-agent-role-binding
+
+aws:
+  region: us-east-1
+
+keda:
+  minReplicaCount: 1
+  maxReplicaCount: 10
+  targetPipelinesQueueLength: "1"
+  poolName: "MY_AGENT_POOL_NAME"
+  TriggerAuthentication:
+    name: pipeline-trigger-auth
+  ScaledObject:
+    name: azure-pipelines-scaledobject
