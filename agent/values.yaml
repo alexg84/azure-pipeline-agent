@@ -21,7 +21,7 @@ deployment:
 
 serviceaccount:
   metadata:
-    name: AZP_NAME
+    name: azure-pipeline-agent-sa
     annotations:
       roleArn: arn:aws:iam::AWS_ACCOUNT_ID:role/AzureDevOpsEKSRole
 
@@ -43,7 +43,7 @@ keda:
   minReplicaCount: 1
   maxReplicaCount: 10
   targetPipelinesQueueLength: "1"
-  poolName: "MY_AGENT_POOL_NAME"
+  poolName: "AZP_AGENT_NAME"
   TriggerAuthentication:
     name: pipeline-trigger-auth
   ScaledObject:
