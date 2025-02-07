@@ -21,7 +21,7 @@ deployment:
 
 serviceaccount:
   metadata:
-    name: azure-pipeline-agent-sa
+    name: AZP_NAME
     annotations:
       roleArn: arn:aws:iam::AWS_ACCOUNT_ID:role/AzureDevOpsEKSRole
 
